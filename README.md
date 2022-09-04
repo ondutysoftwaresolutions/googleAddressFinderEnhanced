@@ -1,9 +1,13 @@
 # Google Address Finder Enhanced
 
 Lightning Web Component for a using the Google Place API. Can be used in Lightning Experience and Flows.
+
 It enhanced the OOTB Salesforce Google location, supporting better control about what to return to what field. Also can be included in flows (not current possible OOTB).
+
 You can specify filters for countries to search for and also if you want to retrieve the Country and State short codes or long codes. Particularly useful if you enable `State and Country/Territory Picklists`.
+
 It fixes the issue when is not populating the city in the City field for UK addresses (I believe there are other countries as well).
+
 It also fixes the issue that for some address will not get the alpha of the number of the house when getting the details (e.g. you search for 10a, you select the 10a record but when it populates the street it strips out the a leaving only the 10).
 
 ## Where can I use it?
