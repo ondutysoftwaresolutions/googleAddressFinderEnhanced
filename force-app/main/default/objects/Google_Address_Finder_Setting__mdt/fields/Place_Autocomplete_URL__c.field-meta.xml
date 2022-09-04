@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Place_Autocomplete_URL__c</fullName>
+    <description>URL for the Google Place Autocomplete Endpoint. 
+Help: https://developers.google.com/maps/documentation/places/web-service/autocomplete</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>URL for the Google Place Autocomplete Endpoint.</inlineHelpText>
+    <label>Place Autocomplete URL</label>
+    <required>false</required>
+    <type>Url</type>
+</CustomField>

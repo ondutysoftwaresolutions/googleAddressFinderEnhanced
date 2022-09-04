@@ -1,0 +1,64 @@
+<template>
+    <template if:true={showInAccordion}>
+        <lightning-card class="address-component-card">
+            <lightning-accordion class="address-component-accordion" active-section-name={isOpen}
+                allow-multiple-sections-open onsectiontoggle={handleToggleSection}>
+                <lightning-accordion-section label={accordionTitle} class="address-component-section" name="opened">
+                    <div class="slds-grid slds-wrap">
+                        <template if:true={error}>
+                            <span class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+                                role="alert">
+                                {error}
+                            </span>
+                        </template>
+                        <template if:false={error}>
+                            <c-google-address-finder-content class={classesFirst} parent={that} address="1">
+                            </c-google-address-finder-content>
+
+                            <template if:true={hasSecondAddress}>
+                                <c-google-address-finder-content class={classesSecond} parent={that} address="2">
+                                </c-google-address-finder-content>
+                            </template>
+                        </template>
+                    </div>
+                </lightning-accordion-section>
+            </lightning-accordion>
+        </lightning-card>
+    </template>
+    <template if:false={showInAccordion}>
+        <div class="slds-grid slds-wrap">
+            <template if:false={showInFlow}>
+                <lightning-card class="address-component-card slds-size--1-of-1">
+                    <template if:true={error}>
+                        <span class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+                            role="alert">
+                            {error}
+                        </span>
+                    </template>
+                    <template if:false={error}>
+                        <div class="slds-grid slds-size--1-of-1 slds-wrap">
+                            <c-google-address-finder-content class={classesFirst} parent={that} address="1">
+                            </c-google-address-finder-content>
+
+                            <template if:true={hasSecondAddress}>
+                                <c-google-address-finder-content class={classesSecond} parent={that} address="2">
+                                </c-google-address-finder-content>
+                            </template>
+                        </div>
+                    </template>
+                </lightning-card>
+            </template>
+            <template if:true={showInFlow}>
+                <template if:true={error}>
+                    <span class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                        {error}
+                    </span>
+                </template>
+                <template if:false={error}>
+                    <c-google-address-finder-content class={classesFirst} parent={that} address="1">
+                    </c-google-address-finder-content>
+                </template>
+            </template>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>GoogleAddressFinderController</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+		<members>Google_Address_Finder_Setting.Places_API</members>
+		<name>CustomMetadata</name>
+	</types>
+    <types>
+		<members>Google_Address_Finder_Setting__mdt</members>
+		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>Google_Address_Finder_Setting__mdt-Google Address Finder Setting Layout</members>
+		<name>Layout</name>
+	</types>
+    <types>
+		<members>googleAddressFinder</members>
+		<members>googleAddressFinderContent</members>
+		<name>LightningComponentBundle</name>
+	</types>
+    <types>
+		<members>GoogleMapsApiURL</members>
+		<name>RemoteSiteSetting</name>
+	</types>
+    <version>55.0</version>
+</Package>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Google Address Finder Enhanced</masterLabel>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="showInAccordion" description="Show the Component inside an accordion or just in a card." label="Show inside an accordion?" type="Boolean" default="true" required="true" />
+            <property name="accordionTitle" description="Title to show in the accordion (only if show in accordion is checked)" label="Accordion Title" type="String" default="Address Information" />
+            <property name="defaultOpen" description="Open the accordion by default (only if show in accordion is checked)" label="Default Opened?" type="Boolean" default="true" required="true" />
+            <property name="numberOfColumns" description="How many columns to show?" label="Number of Columns" type="String" default="2" required="true" datasource="1,2" />
+
+            <property name="required1" description="Is the First Address required?" label="First Address Required?" type="Boolean" required="true" default="false" />
+            <property name="labelToShow1" description="Label of the First Field" label="First Field Label" placeholder="e.g. Billing Address" type="String" required="true" default="" />
+            <property name="streetField1" description="API name of the First Street Field" label="First Street Field" type="String" placeholder="e.g. BillingStreet" required="true" default="" />
+            <property name="cityField1" description="API name of the First City Field" label="First City Field" type="String" placeholder="e.g. BillingCity" required="true" default="" />
+            <property name="stateField1" description="API name of the First state Field" label="First State/Province Field" type="String" placeholder="e.g. BillingState" required="true" default="" />
+            <property name="postalCodeField1" description="API name of the First Postal Code Field" label="First Postal Code Field" type="String" placeholder="e.g. BillingPostalCode" required="true" default="" />
+            <property name="countryField1" description="API name of the First Country Field" label="First Country Field" type="String" placeholder="e.g. BillingCountry" required="true" default="" />
+            <property name="placeIdField1" description="API name of the First Place Id Field" label="First Place Id Field" type="String" placeholder="e.g. Billing_Place_Id__c" default="" />
+            <property name="latitudeField1" description="API name of the First Latitude Field" label="First Latitude Field" type="String" placeholder="e.g. Billing_Latitude__c" default="" />
+            <property name="longitudeField1" description="API name of the First Longitude Field" label="First Longitude Field" type="String" placeholder="e.g. Billing_Longitude__c" default="" />
+            <property name="showMap1" description="Show a static map of the First address" label="Show First Address Map?" type="Boolean" default="true" />
+            <property name="editEnabled1" description="Is the edition of the First Address enabled?" label="Allow edition First Address?" type="Boolean" default="true" />
+            <property name="editAlwaysEnabled1" description="Is the edition of the First Address always enabled?" label="Edit First Address always enabled?" type="Boolean" default="false" required="true" />
+            <property name="showButtons1" description="Show the Save and Cancel buttons for the First Address?" label="Show Buttons First Address?" type="Boolean" default="true" required="true" />
+            <property name="disabledInputsWhenFound1" description="Disable the individual field when an address was found for the First Address?" label="Disable Individual Fields for First Address?" type="Boolean" default="true" required="true" />
+            <property name="countryFilters1" description="Comma separated list of Countries (2 digit) to filter the results for the First Address. Maximum 5." label="First Address Country Filters" type="String" placeholder="AU,NZ" default="" />
+            <property name="stateAndCountryShortCodes1" description="Do we need to populate short codes for country and state for the First Address?" label="Use Country and State Short Codes for First Address?" type="Boolean" default="false" required="true" />
+
+            <property name="required2" description="Is the Second Address required?" label="Second Address Required?" type="Boolean" required="true" default="false" />
+            <property name="labelToShow2" description="Label of the Second Field" label="Second Field Label" placeholder="e.g. Shipping Address" type="String" default="" />
+            <property name="streetField2" description="API name of the Second Street Field" label="Second Street Field" type="String" placeholder="e.g. ShippingStreet" default="" />
+            <property name="cityField2" description="API name of the Second City Field" label="Second City Field" type="String" placeholder="e.g. ShippingCity" default="" />
+            <property name="stateField2" description="API name of the Second State/Province Field" label="Second State/Province Field" type="String" placeholder="e.g. ShippingState" default="" />
+            <property name="postalCodeField2" description="API name of the Second Postal Code Field" label="Second Postal Code Field" type="String" placeholder="e.g. ShippingPostalCode" default="" />
+            <property name="countryField2" description="API name of the Second Country Field" label="Second Country Field" type="String" placeholder="e.g. ShippingCountry" default="" />
+            <property name="placeIdField2" description="API name of the Second Place Id Field" label="Second Place Id Field" type="String" placeholder="e.g. Shipping_Place_Id__c" default="" />
+            <property name="latitudeField2" description="API name of the Second Latitude Field" label="Second Latitude Field" type="String" placeholder="e.g. Shipping_Latitude__c" default="" />
+            <property name="longitudeField2" description="API name of the Second Longitude Field" label="Second Longitude Field" type="String" placeholder="e.g. Shipping_Longitude__c" default="" />
+            <property name="showMap2" description="Show a static map of the Second address" label="Show Second Address Map?" type="Boolean" default="true" required="true" />
+            <property name="editEnabled2" description="Is the edition of the Second Address enabled?" label="Allow edition Second Address?" type="Boolean" default="true" required="true" />
+            <property name="editAlwaysEnabled2" description="Is the edition of the Second Address always enabled?" label="Edit Second Address always enabled?" type="Boolean" default="false" required="true" />
+            <property name="showButtons2" description="Show the Save and Cancel buttons for the Second Address?" label="Show Buttons Second Address?" type="Boolean" default="true" required="true" />
+            <property name="disabledInputsWhenFound2" description="Disable the individual field when an address was found for the Second Address?" label="Disable Individual Fields for Second Address?" type="Boolean" default="true" required="true" />
+            <property name="countryFilters2" description="Comma separated list of Countries (2 digit) to filter the results for the Second Address. Maximum 5." label="Second Address Country Filters" type="String" placeholder="AU,NZ" default="" />
+            <property name="stateAndCountryShortCodes2" description="Do we need to populate short codes for country and state for the Second Address?" label="Use Country and State Short Codes for Second Address?" type="Boolean" default="false" required="true" />
+        </targetConfig>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="required1" description="Is the Address required?" label="Address Required?" type="Boolean" required="true" default="false" role="inputOnly" />
+            <property name="labelToShow1" description="Label of the Main Field" label="Main Field Label" placeholder="e.g. Billing Address" type="String" role="inputOnly" default="Address" />
+            <property name="countryFilters1" description="Comma separated list of Countries (2 digit) to filter the results for the Address. Maximum 5." label="Address Country Filters" type="String" placeholder="AU,NZ" default="" role="inputOnly" />
+            <property name="stateAndCountryShortCodes1" description="Do we need to populate short codes for country and state for the Address?" label="Use Country and State Short Codes for Address?" type="Boolean" default="false" role="inputOnly" />
+            <property name="showMap1" description="Show a static map of the address" label="Show Map?" type="Boolean" default="false" role="inputOnly" />
+
+            <property name="searchEnabled" description="Is the Google Search Address enabled?" label="Allow Search?" type="Boolean" required="true" default="true" role="inputOnly" />
+            <property name="disabledInputs" description="Disable the inputs of the individual fields when the address is found" label="Disable the Individual Fields" default="false" required="true" type="Boolean" role="inputOnly" />
+            <property name="hideEditFields" description="Hide the individual fields for edition" label="Hide the Individual Fields?" type="Boolean" default="false" required="true" role="inputOnly" />
+
+            <property name="streetInput" description="Street default value" label="Street" type="String" role="inputOnly" />
+            <property name="cityInput" description="City default value" label="City" type="String" role="inputOnly" />
+            <property name="stateInput" description="State/Province default value" label="State/Province" type="String" role="inputOnly" />
+            <property name="postalCodeInput" description="Postal Code default value" label="Postal Code" type="String" role="inputOnly" />
+            <property name="countryInput" description="Country default value" label="Country" type="String" role="inputOnly" />
+            <property name="placeIdInput" description="Place Id default value" label="Place Id" type="String" role="inputOnly" />
+            <property name="latitudeInput" description="Latitude default value" label="Latitude" type="String" role="inputOnly" />
+            <property name="longitudeInput" description="Longitude default value" label="Longitude" type="String" role="inputOnly" />
+
+            <property name="streetOutput" description="Street returned from Google Places API" label="Street" type="String" role="outputOnly" />
+            <property name="cityOutput" description="City returned from Google Places API" label="City" type="String" role="outputOnly" />
+            <property name="stateOutput" description="State/Province returned from Google Places API" label="State/Province" type="String" role="outputOnly" />
+            <property name="postalCodeOutput" description="Postal Code returned from Google Places API" label="Postal Code" type="String" role="outputOnly" />
+            <property name="countryOutput" description="Country returned from Google Places API" label="Country" type="String" role="outputOnly" />
+            <property name="placeIdOutput" description="Place Id returned from Google" label="Google Place Id" type="String" role="outputOnly" />
+            <property name="latitudeOutput" description="Latitude returned from Google Places API" label="Latitude" type="String" role="outputOnly" />
+            <property name="longitudeOutput" description="Longitude returned from Google Places API" label="Longitude" type="String" role="outputOnly" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

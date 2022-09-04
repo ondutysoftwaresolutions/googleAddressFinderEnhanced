@@ -1,0 +1,7 @@
+.border-bottom {
+  border-bottom: var(--lwc-borderWidthThin, 1px) solid var(--lwc-colorBorder, rgb(229, 229, 229));
+}
+
+.font-14 {
+  font-size: 0.875rem;
+}
