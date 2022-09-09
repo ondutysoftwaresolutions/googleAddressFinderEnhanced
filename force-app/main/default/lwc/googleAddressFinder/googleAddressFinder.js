@@ -10,7 +10,7 @@ export default class GoogleAddressFinder extends LightningElement {
   @api numberOfColumns = '2';
 
   // addresses
-  @api required1;
+  @api requiredSearch1;
   @api streetField1;
   @api cityField1;
   @api stateField1;
@@ -27,8 +27,13 @@ export default class GoogleAddressFinder extends LightningElement {
   @api disabledInputsWhenFound1;
   @api countryFilters1;
   @api stateAndCountryShortCodes1;
+  @api requiredStreet1;
+  @api requiredCity1;
+  @api requiredState1;
+  @api requiredCountry1;
+  @api requiredPostalCode1;
 
-  @api required2;
+  @api requiredSearch2;
   @api streetField2;
   @api cityField2;
   @api stateField2;
@@ -45,6 +50,11 @@ export default class GoogleAddressFinder extends LightningElement {
   @api disabledInputsWhenFound2;
   @api countryFilters2;
   @api stateAndCountryShortCodes2 = false;
+  @api requiredStreet2;
+  @api requiredCity2;
+  @api requiredState2;
+  @api requiredCountry2;
+  @api requiredPostalCode2;
 
   // flow input
   @api disabledInputs;
@@ -109,22 +119,56 @@ export default class GoogleAddressFinder extends LightningElement {
   // validate for flow screen, if it's required and we select an address or it's not required
   // =======================================================================================================================================================================================================================================
   @api validate() {
-    if (
-      (this.required1 &&
-        this.streetOutput &&
-        this.cityOutput &&
-        this.countryOutput &&
-        this.stateOutput &&
-        this.postalCodeOutput) ||
-      !this.required1
-    ) {
-      return { isValid: true };
+    // required search
+    if (this.requiredSearch1 && !this.placeIdOutput) {
+      return {
+        isValid: false,
+        errorMessage:
+          "The search is required for the address and you didn't use it. Please use the Search box to find a valid address.",
+      };
     }
-    return {
-      isValid: false,
-      errorMessage:
-        'The address is required. You must add a street, city, state, country and postal code to be able to continue',
-    };
+
+    // required street
+    if (this.requiredStreet1 && !this.streetOutput) {
+      return {
+        isValid: false,
+        errorMessage: 'The Street is required. You must add one before continue',
+      };
+    }
+
+    // required city
+    if (this.requiredCity1 && !this.cityOutput) {
+      return {
+        isValid: false,
+        errorMessage: 'The City is required. You must add one before continue',
+      };
+    }
+
+    // required state
+    if (this.requiredState1 && !this.stateOutput) {
+      return {
+        isValid: false,
+        errorMessage: 'The State is required. You must add one before continue',
+      };
+    }
+
+    // required country
+    if (this.requiredCountry1 && !this.countryOutput) {
+      return {
+        isValid: false,
+        errorMessage: 'The Country is required. You must add one before continue',
+      };
+    }
+
+    // required postal code
+    if (this.requiredPostalCode1 && !this.postalCodeOutput) {
+      return {
+        isValid: false,
+        errorMessage: 'The Postal Code is required. You must add one before continue',
+      };
+    }
+
+    return { isValid: true };
   }
 
   // =======================================================================================================================================================================================================================================
@@ -179,7 +223,7 @@ export default class GoogleAddressFinder extends LightningElement {
 
   _setFlowDefaultValues() {
     // set default specifically for flows, this is because flows does not use the default from the configuration XML file yet.
-    this.required1 = this.required1 === undefined ? false : this.required1;
+    this.requiredSearch1 = this.requiredSearch1 === undefined ? false : this.requiredSearch1;
     this.labelToShow1 = this.labelToShow1 === undefined ? 'Address' : this.labelToShow1;
     this.stateAndCountryShortCodes1 =
       this.stateAndCountryShortCodes1 === undefined ? false : this.stateAndCountryShortCodes1;
@@ -187,6 +231,21 @@ export default class GoogleAddressFinder extends LightningElement {
     this.disabledInputs = this.disabledInputs === undefined ? false : this.disabledInputs;
     this.hideEditFields = this.hideEditFields === undefined ? false : this.hideEditFields;
     this.searchEnabled = this.searchEnabled === undefined ? true : this.searchEnabled;
+    this.requiredStreet1 = this.requiredStreet1 === undefined ? false : this.requiredStreet1;
+    this.requiredCity1 = this.requiredCity1 === undefined ? false : this.requiredCity1;
+    this.requiredState1 = this.requiredState1 === undefined ? false : this.requiredState1;
+    this.requiredCountry1 = this.requiredCountry1 === undefined ? false : this.requiredCountry1;
+    this.requiredPostalCode1 = this.requiredPostalCode1 === undefined ? false : this.requiredPostalCode1;
+
+    // set default output values
+    this.streetOutput = this.streetInput;
+    this.cityOutput = this.cityInput;
+    this.stateOutput = this.stateInput;
+    this.countryOutput = this.countryInput;
+    this.postalCodeOutput = this.postalCodeInput;
+    this.placeIdOutput = this.placeIdInput;
+    this.latitudeOutput = this.latitudeInput;
+    this.longitudeOutput = this.longitudeInput;
   }
 
   // =======================================================================================================================================================================================================================================

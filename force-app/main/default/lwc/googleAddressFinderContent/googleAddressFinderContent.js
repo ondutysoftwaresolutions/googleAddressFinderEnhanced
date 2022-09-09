@@ -194,8 +194,28 @@ export default class GoogleAddressFinderContent extends LightningElement {
     return this.parent[`labelToShow${this.address}`];
   }
 
-  get _isRequired() {
-    return this.parent[`required${this.address}`];
+  get _isRequiredSearch() {
+    return this.parent[`requiredSearch${this.address}`];
+  }
+
+  get isRequiredStreet() {
+    return this.parent[`requiredStreet${this.address}`];
+  }
+
+  get isRequiredCity() {
+    return this.parent[`requiredCity${this.address}`];
+  }
+
+  get isRequiredState() {
+    return this.parent[`requiredState${this.address}`];
+  }
+
+  get isRequiredCountry() {
+    return this.parent[`requiredCountry${this.address}`];
+  }
+
+  get isRequiredPostalCode() {
+    return this.parent[`requiredPostalCode${this.address}`];
   }
 
   get _useShortCodes() {
@@ -327,7 +347,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
   }
 
   get requiredStar() {
-    return this._isRequired ? '*' : '';
+    return this._isRequiredSearch ? '*' : '';
   }
 
   get _formattedAddress() {
@@ -406,10 +426,6 @@ export default class GoogleAddressFinderContent extends LightningElement {
             }
 
             return errorToReturn;
-          }
-          // NZ Post errors
-          else if (error.details && error.message) {
-            return error.details;
           }
           // JS errors
           else if (typeof error.message === 'string') {
@@ -683,8 +699,16 @@ export default class GoogleAddressFinderContent extends LightningElement {
   handleSave(event) {
     event.preventDefault(); // stop the form from submitting
     const fields = event.detail.fields;
-    this.showSpinner = true;
-    this.template.querySelector('lightning-record-edit-form').submit(fields);
+
+    if (this._isRequiredSearch && !this._placeId) {
+      this.handleSaveError({
+        detail:
+          "The search is required for the address and you didn't use it. Please use the Search box to find a valid address.",
+      });
+    } else {
+      this.showSpinner = true;
+      this.template.querySelector('lightning-record-edit-form').submit(fields);
+    }
   }
 
   handleSaveSuccess() {
@@ -695,7 +719,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   handleSaveError(e) {
     this.showSpinner = false;
-    //this.error = reduceErrors(e.detail);
+    this.error = this._reduceErrors(e.detail);
   }
 
   handleCancel() {

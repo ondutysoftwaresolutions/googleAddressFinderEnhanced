@@ -1,234 +1,386 @@
 <template>
-    <template if:false={isEditing}>
-        <div class={viewModeClasses}>
-            <div class="slds-form-element__label slds-size--1-of-6">
-                {labelToShow}
-            </div>
-            <div class="slds-form-element__control slds-grid slds-size--5-of-6 slds-p-top--x-small">
-                <lightning-formatted-address class="slds-size--11-of-12 font-14" street={street} city={city}
-                    country={country} province={state} show-static-map={showMap} postal-code={postalCode}>
-                </lightning-formatted-address>
-                <template if:true={editEnabled}>
-                    <lightning-button-icon icon-name="utility:edit" variant="container" alternative-text="Settings"
-                        class="slds-size--1-of-12 slds-text-align--right" onclick={handleToggleEdit}>
-                    </lightning-button-icon>
-                </template>
-            </div>
-        </div>
+  <template if:false={isEditing}>
+    <div class={viewModeClasses}>
+      <div class="slds-form-element__label slds-size--1-of-6">{labelToShow}</div>
+      <div class="slds-form-element__control slds-grid slds-size--5-of-6 slds-p-top--x-small">
+        <lightning-formatted-address
+          class="slds-size--11-of-12 font-14"
+          street={street}
+          city={city}
+          country={country}
+          province={state}
+          show-static-map={showMap}
+          postal-code={postalCode}
+        >
+        </lightning-formatted-address>
+        <template if:true={editEnabled}>
+          <lightning-button-icon
+            icon-name="utility:edit"
+            variant="container"
+            alternative-text="Settings"
+            class="slds-size--1-of-12 slds-text-align--right"
+            onclick={handleToggleEdit}
+          >
+          </lightning-button-icon>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <template if:true={isEditing}>
+    <template if:true={error}>
+      <span class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+        {error}
+      </span>
     </template>
+    <template if:true={showSpinner}>
+      <lightning-spinner variant="brand" alternative-text="Loading"></lightning-spinner>
+    </template>
+    <template if:true={finishLoaded}>
+      <div class="slds-form-element slds-grid slds-wrap">
+        <div class="slds-size--1-of-1">
+          <div class="slds-form-element__control">
+            <div
+              class="slds-form-element__label slds-m-bottom--none slds-p-around--xx-small slds-size--1-of-1"
+              style="padding-bottom: 0.025rem"
+            >
+              <span class="required-star">{requiredStar}</span>
+              {labelToShow}
+            </div>
+            <template if:true={allowSearch}>
+              <div class="slds-combobox_container">
+                <div
+                  class={dropdownClasses}
+                  data-id="resultBox"
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  role="combobox"
+                >
+                  <div
+                    class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right"
+                    role="none"
+                  >
+                    <lightning-input
+                      name="search"
+                      class="slds-form-element slds-grid slds-m-bottom--xx-small slds-p-left--xx-small slds-p-right--xx-small"
+                      placeholder="Type to search for addresses..."
+                      variant="label-hidden"
+                      type="search"
+                      onchange={handleSearch}
+                      value={searchText}
+                    >
+                    </lightning-input>
+                  </div>
 
-    <template if:true={isEditing}>
-        <template if:true={error}>
-            <span class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
-                {error}
-            </span>
-        </template>
-        <template if:true={showSpinner}>
-            <lightning-spinner variant="brand" alternative-text="Loading"></lightning-spinner>
-        </template>
-        <template if:true={finishLoaded}>
-            <div class="slds-form-element slds-grid slds-wrap">
-                <div class="slds-size--1-of-1">
-                    <div class="slds-form-element__control">
-                        <div class="slds-form-element__label slds-m-bottom--none slds-p-around--xx-small slds-size--1-of-1"
-                            style="padding-bottom: 0.025rem;">
-                            <span class="required-star">{requiredStar}</span>
-                            {labelToShow}
-                        </div>
-                        <template if:true={allowSearch}>
-                            <div class="slds-combobox_container">
-                                <div class={dropdownClasses} data-id="resultBox" aria-expanded="false"
-                                    aria-haspopup="listbox" role="combobox">
-                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right"
-                                        role="none">
-                                        <lightning-input name="search"
-                                            class="slds-form-element slds-grid slds-m-bottom--xx-small slds-p-left--xx-small slds-p-right--xx-small"
-                                            placeholder="Type to search for addresses..." variant="label-hidden"
-                                            type="search" onchange={handleSearch} value={searchText}>
-                                        </lightning-input>
-                                    </div>
-
-                                    <!-- Display search Results -->
-                                    <div id="searchResults"
-                                        class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid"
-                                        role="listbox">
-                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                            <template if:true={searchedResults.length}>
-                                                <template for:each={searchedResults} for:item="address">
-                                                    <li role="presentation" class="slds-listbox__item"
-                                                        key={address.place_id}>
-                                                        <div data-id={address.place_id} onclick={handleSelectAddress}
-                                                            data-description={address.description}
-                                                            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
-                                                            role="option">
-                                                            <span
-                                                                class="slds-listbox__option-text slds-listbox__option-text_entity slds-p-around--xx-small">{address.description}</span>
-                                                        </div>
-                                                    </li>
-                                                </template>
-                                            </template>
-                                            <template if:true={noRecordsFound}>
-                                                <li role="presentation"
-                                                    class="slds-align--absolute-center slds-listbox__item">
-                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
-                                                        role="option">
-                                                        <span
-                                                            class="slds-listbox__option-text slds-listbox__option-text_entity slds-p-around--xx-small">
-                                                            No result found.
-                                                        </span>
-                                                    </div>
-                                                </li>
-                                            </template>
-                                            <template if:true={errorFromAPI}>
-                                                <li role="presentation"
-                                                    class="slds-align--absolute-center slds-listbox__item">
-                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
-                                                        role="option">
-                                                        <span
-                                                            class="slds-listbox__option-text slds-listbox__option-text_entity slds-p-around--xx-small">
-                                                            {errorFromAPI}
-                                                        </span>
-                                                    </div>
-                                                </li>
-                                            </template>
-                                            <template if:false={errorFromAPI}>
-                                                <template if:true={loadingAddresses}>
-                                                    <li role="presentation"
-                                                        class="slds-align--absolute-center slds-listbox__item">
-                                                        <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
-                                                            role="option">
-                                                            <span
-                                                                class="slds-listbox__option-text slds-listbox__option-text_entity slds-p-around--xx-small">Loading...</span>
-                                                        </div>
-                                                    </li>
-                                                </template>
-                                            </template>
-                                        </ul>
-                                    </div>
-                                </div>
+                  <!-- Display search Results -->
+                  <div
+                    id="searchResults"
+                    class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid"
+                    role="listbox"
+                  >
+                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                      <template if:true={searchedResults.length}>
+                        <template for:each={searchedResults} for:item="address">
+                          <li role="presentation" class="slds-listbox__item" key={address.place_id}>
+                            <div
+                              data-id={address.place_id}
+                              onclick={handleSelectAddress}
+                              data-description={address.description}
+                              class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                              role="option"
+                            >
+                              <span
+                                class="slds-listbox__option-text slds-listbox__option-text_entity slds-p-around--xx-small"
+                                >{address.description}</span
+                              >
                             </div>
+                          </li>
                         </template>
-                    </div>
+                      </template>
+                      <template if:true={noRecordsFound}>
+                        <li role="presentation" class="slds-align--absolute-center slds-listbox__item">
+                          <div
+                            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                            role="option"
+                          >
+                            <span
+                              class="slds-listbox__option-text slds-listbox__option-text_entity slds-p-around--xx-small"
+                            >
+                              No result found.
+                            </span>
+                          </div>
+                        </li>
+                      </template>
+                      <template if:true={errorFromAPI}>
+                        <li role="presentation" class="slds-align--absolute-center slds-listbox__item">
+                          <div
+                            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                            role="option"
+                          >
+                            <span
+                              class="slds-listbox__option-text slds-listbox__option-text_entity slds-p-around--xx-small"
+                            >
+                              {errorFromAPI}
+                            </span>
+                          </div>
+                        </li>
+                      </template>
+                      <template if:false={errorFromAPI}>
+                        <template if:true={loadingAddresses}>
+                          <li role="presentation" class="slds-align--absolute-center slds-listbox__item">
+                            <div
+                              class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                              role="option"
+                            >
+                              <span
+                                class="slds-listbox__option-text slds-listbox__option-text_entity slds-p-around--xx-small"
+                                >Loading...</span
+                              >
+                            </div>
+                          </li>
+                        </template>
+                      </template>
+                    </ul>
+                  </div>
                 </div>
-            </div>
-        </template>
-
-        <template if:true={isInFlow}>
-            <div class="slds-form-element slds-grid slds-wrap">
-                <template if:true={showIndividualFieldsInFlow}>
-                    <div class="slds-grid slds-size--1-of-1 slds-wrap">
-                        <lightning-textarea class="slds-size--1-of-1" data-name="street" label="Street"
-                            variant="label-stacked" onchange={handleChangeInput} value={street}
-                            disabled={disabledInputsWhenFoundFlow}></lightning-textarea>
-                        <lightning-input class="slds-size--4-of-6" label="City" data-name="city" variant="label-stacked"
-                            onchange={handleChangeInput} value={city} disabled={disabledInputsWhenFoundFlow}>
-                        </lightning-input>
-                        <lightning-input class="slds-size--2-of-6" label="State/Province" data-name="state"
-                            variant="label-stacked" onchange={handleChangeInput} value={state}
-                            disabled={disabledInputsWhenFoundFlow}>
-                        </lightning-input>
-                        <lightning-input class="slds-size--4-of-6" label="Postal Code" data-name="postalCode"
-                            variant="label-stacked" onchange={handleChangeInput} disabled={disabledInputsWhenFoundFlow}
-                            value={postalCode}>
-                        </lightning-input>
-                        <lightning-input class="slds-size--2-of-6" label="Country"
-                            disabled={disabledInputsWhenFoundFlow} data-name="country" variant="label-stacked"
-                            onchange={handleChangeInput} value={country}>
-                        </lightning-input>
-                        <lightning-input class="slds-size--2-of-6 slds-hide" data-name="placeId" label="Place Id"
-                            disabled variant="label-stacked" onchange={handleChangeInput} value={placeId}>
-                        </lightning-input>
-                        <lightning-input class="slds-size--1-of-2 slds-hide" data-name="latitude" label="Latitude"
-                            disabled variant="label-stacked" onchange={handleChangeInput} value={latitude}>
-                        </lightning-input>
-                        <lightning-input class="slds-size--1-of-2 slds-hide" data-name="longitude" label="Longitude"
-                            disabled variant="label-stacked" onchange={handleChangeInput} value={longitude}>
-                        </lightning-input>
-                    </div>
-                </template>
-                <!-- Display Map on Edition -->
-                <template if:true={showMapInFlow}>
-                    <div class="slds-size--1-of-1 editMap">
-                        <lightning-map map-markers={mapMarkers} zoom-level="16"></lightning-map>
-                    </div>
-                </template>
-                <template if:true={showMapErrorInFlow}>
-                    <div class="slds-grid slds-size--1-of-1 slds-wrap">
-                        <span class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
-                            role="alert">
-                            {currentLocationError}
-                        </span>
-                    </div>
-                </template>
-            </div>
-        </template>
-        <template if:true={isInRecordPage}>
-            <div class="slds-form-element slds-grid">
-                <lightning-record-edit-form id="address" record-id={parent.recordId}
-                    object-api-name={parent.objectApiName} class="slds-size--1-of-1" onsubmit={handleSave}
-                    onsuccess={handleSaveSuccess} onload={handleOnLoad} onerror={handleSaveError}>
-                    <template if:false={finishLoaded}>
-                        <lightning-card title="Loading form. Please wait..." icon-name="utility:spinner">
-                            <lightning-spinner variant="brand" alternative-text="Loading"></lightning-spinner>
-                        </lightning-card>
-                    </template>
-                    <template if:true={finishLoaded}>
-                        <template if:false={showSpinner}>
-                            <lightning-messages></lightning-messages>
-                        </template>
-
-                        <div class="slds-grid slds-wrap">
-                            <lightning-input-field class="slds-size--1-of-1 slds-m-bottom--none" data-name="street"
-                                variant="label-stacked" field-name={streetField} onchange={handleChangeInput}
-                                value={street} disabled={disabledInputsWhenFound}></lightning-input-field>
-                            <lightning-input-field class="slds-m-bottom--none slds-size--1-of-1" data-name="city"
-                                variant="label-stacked" field-name={cityField} onchange={handleChangeInput} value={city}
-                                disabled={disabledInputsWhenFound}>
-                            </lightning-input-field>
-                            <lightning-input-field class="slds-size--4-of-6 slds-m-bottom--none" data-name="postalCode"
-                                variant="label-stacked" field-name={postalCodeField} onchange={handleChangeInput}
-                                value={postalCode} disabled={disabledInputsWhenFound}>
-                            </lightning-input-field>
-                            <lightning-input-field class="slds-size--2-of-6 slds-m-bottom--none" data-name="state"
-                                variant="label-stacked" field-name={stateField} onchange={handleChangeInput}
-                                value={state} disabled={disabledInputsWhenFound}>
-                            </lightning-input-field>
-                            <lightning-input-field class={countryInputClasses} data-name="country"
-                                variant="label-stacked" field-name={countryField} onchange={handleChangeInput}
-                                value={country} disabled={disabledInputsWhenFound}>
-                            </lightning-input-field>
-                            <template if:true={placeIdField}>
-                                <lightning-input-field class="slds-size--2-of-6 slds-m-bottom--none" data-name="placeId"
-                                    variant="label-stacked" field-name={placeIdField} onchange={handleChangeInput}
-                                    value={placeId} disabled>
-                                </lightning-input-field>
-                            </template>
-                            <template if:true={latitudeField}>
-                                <lightning-input-field class="slds-size--2-of-6 slds-m-bottom--none slds-hide"
-                                    data-name="latitude" variant="label-stacked" field-name={latitudeField}
-                                    onchange={handleChangeInput} value={latitude} disabled>
-                                </lightning-input-field>
-                            </template>
-                            <template if:true={longitudeField}>
-                                <lightning-input-field class="slds-size--2-of-6 slds-m-bottom--none slds-hide"
-                                    data-name="longitude" variant="label-stacked" field-name={longitudeField}
-                                    onchange={handleChangeInput} value={longitude} disabled>
-                                </lightning-input-field>
-                            </template>
-                        </div>
-
-                        <template if:true={showButtons}>
-                            <lightning-button-group
-                                class="slds-align--absolute-center slds-button-group slds-m-top--xx-small">
-                                <lightning-button label="Save" variant="brand" disabled={isNotChanged} type="submit">
-                                </lightning-button>
-                                <lightning-button label="Cancel" onclick={handleCancel}>
-                                </lightning-button>
-                            </lightning-button-group>
-                        </template>
-                    </template>
-                </lightning-record-edit-form>
-            </div>
-        </template>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
     </template>
+
+    <template if:true={isInFlow}>
+      <div class="slds-form-element slds-grid slds-wrap">
+        <template if:true={showIndividualFieldsInFlow}>
+          <div class="slds-grid slds-size--1-of-1 slds-wrap">
+            <lightning-textarea
+              class="slds-size--1-of-1"
+              data-name="street"
+              label="Street"
+              variant="label-stacked"
+              onchange={handleChangeInput}
+              value={street}
+              required={isRequiredStreet}
+              disabled={disabledInputsWhenFoundFlow}
+            ></lightning-textarea>
+            <lightning-input
+              class="slds-size--4-of-6"
+              label="City"
+              data-name="city"
+              variant="label-stacked"
+              onchange={handleChangeInput}
+              value={city}
+              disabled={disabledInputsWhenFoundFlow}
+              required={isRequiredCity}
+            >
+            </lightning-input>
+            <lightning-input
+              class="slds-size--2-of-6"
+              label="State/Province"
+              data-name="state"
+              variant="label-stacked"
+              onchange={handleChangeInput}
+              value={state}
+              required={isRequiredState}
+              disabled={disabledInputsWhenFoundFlow}
+            >
+            </lightning-input>
+            <lightning-input
+              class="slds-size--4-of-6"
+              label="Postal Code"
+              data-name="postalCode"
+              required={isRequiredPostalCode}
+              variant="label-stacked"
+              onchange={handleChangeInput}
+              disabled={disabledInputsWhenFoundFlow}
+              value={postalCode}
+            >
+            </lightning-input>
+            <lightning-input
+              class="slds-size--2-of-6"
+              label="Country"
+              disabled={disabledInputsWhenFoundFlow}
+              data-name="country"
+              variant="label-stacked"
+              required={isRequiredCountry}
+              onchange={handleChangeInput}
+              value={country}
+            >
+            </lightning-input>
+            <lightning-input
+              class="slds-size--2-of-6 slds-hide"
+              data-name="placeId"
+              label="Place Id"
+              disabled
+              variant="label-stacked"
+              onchange={handleChangeInput}
+              value={placeId}
+            >
+            </lightning-input>
+            <lightning-input
+              class="slds-size--1-of-2 slds-hide"
+              data-name="latitude"
+              label="Latitude"
+              disabled
+              variant="label-stacked"
+              onchange={handleChangeInput}
+              value={latitude}
+            >
+            </lightning-input>
+            <lightning-input
+              class="slds-size--1-of-2 slds-hide"
+              data-name="longitude"
+              label="Longitude"
+              disabled
+              variant="label-stacked"
+              onchange={handleChangeInput}
+              value={longitude}
+            >
+            </lightning-input>
+          </div>
+        </template>
+        <!-- Display Map on Edition -->
+        <template if:true={showMapInFlow}>
+          <div class="slds-size--1-of-1 editMap">
+            <lightning-map map-markers={mapMarkers} zoom-level="16"></lightning-map>
+          </div>
+        </template>
+        <template if:true={showMapErrorInFlow}>
+          <div class="slds-grid slds-size--1-of-1 slds-wrap">
+            <span class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+              {currentLocationError}
+            </span>
+          </div>
+        </template>
+      </div>
+    </template>
+    <template if:true={isInRecordPage}>
+      <div class="slds-form-element slds-grid">
+        <lightning-record-edit-form
+          id="address"
+          record-id={parent.recordId}
+          object-api-name={parent.objectApiName}
+          class="slds-size--1-of-1"
+          onsubmit={handleSave}
+          onsuccess={handleSaveSuccess}
+          onload={handleOnLoad}
+          onerror={handleSaveError}
+        >
+          <template if:false={finishLoaded}>
+            <lightning-card title="Loading form. Please wait..." icon-name="utility:spinner">
+              <lightning-spinner variant="brand" alternative-text="Loading"></lightning-spinner>
+            </lightning-card>
+          </template>
+          <template if:true={finishLoaded}>
+            <template if:false={showSpinner}>
+              <lightning-messages></lightning-messages>
+            </template>
+
+            <div class="slds-grid slds-wrap">
+              <lightning-input-field
+                class="slds-size--1-of-1 slds-m-bottom--none"
+                data-name="street"
+                variant="label-stacked"
+                field-name={streetField}
+                onchange={handleChangeInput}
+                required={isRequiredStreet}
+                value={street}
+                disabled={disabledInputsWhenFound}
+              >
+              </lightning-input-field>
+              <lightning-input-field
+                class="slds-m-bottom--none slds-size--1-of-1"
+                data-name="city"
+                required={isRequiredCity}
+                variant="label-stacked"
+                field-name={cityField}
+                onchange={handleChangeInput}
+                value={city}
+                disabled={disabledInputsWhenFound}
+              >
+              </lightning-input-field>
+              <lightning-input-field
+                class="slds-size--4-of-6 slds-m-bottom--none"
+                data-name="postalCode"
+                required={isRequiredPostalCode}
+                variant="label-stacked"
+                field-name={postalCodeField}
+                onchange={handleChangeInput}
+                value={postalCode}
+                disabled={disabledInputsWhenFound}
+              >
+              </lightning-input-field>
+              <lightning-input-field
+                class="slds-size--2-of-6 slds-m-bottom--none"
+                data-name="state"
+                variant="label-stacked"
+                field-name={stateField}
+                onchange={handleChangeInput}
+                required={isRequiredState}
+                value={state}
+                disabled={disabledInputsWhenFound}
+              >
+              </lightning-input-field>
+              <lightning-input-field
+                class={countryInputClasses}
+                data-name="country"
+                required={isRequiredCountry}
+                variant="label-stacked"
+                field-name={countryField}
+                onchange={handleChangeInput}
+                value={country}
+                disabled={disabledInputsWhenFound}
+              >
+              </lightning-input-field>
+              <template if:true={placeIdField}>
+                <lightning-input-field
+                  class="slds-size--2-of-6 slds-m-bottom--none"
+                  data-name="placeId"
+                  variant="label-stacked"
+                  field-name={placeIdField}
+                  onchange={handleChangeInput}
+                  value={placeId}
+                  disabled
+                >
+                </lightning-input-field>
+              </template>
+              <template if:true={latitudeField}>
+                <lightning-input-field
+                  class="slds-size--2-of-6 slds-m-bottom--none slds-hide"
+                  data-name="latitude"
+                  variant="label-stacked"
+                  field-name={latitudeField}
+                  onchange={handleChangeInput}
+                  value={latitude}
+                  disabled
+                >
+                </lightning-input-field>
+              </template>
+              <template if:true={longitudeField}>
+                <lightning-input-field
+                  class="slds-size--2-of-6 slds-m-bottom--none slds-hide"
+                  data-name="longitude"
+                  variant="label-stacked"
+                  field-name={longitudeField}
+                  onchange={handleChangeInput}
+                  value={longitude}
+                  disabled
+                >
+                </lightning-input-field>
+              </template>
+            </div>
+
+            <template if:true={showButtons}>
+              <lightning-button-group class="slds-align--absolute-center slds-button-group slds-m-top--xx-small">
+                <lightning-button label="Save" variant="brand" disabled={isNotChanged} type="submit">
+                </lightning-button>
+                <lightning-button label="Cancel" onclick={handleCancel}> </lightning-button>
+              </lightning-button-group>
+            </template>
+          </template>
+        </lightning-record-edit-form>
+      </div>
+    </template>
+  </template>
 </template>
