@@ -1,11 +1,16 @@
 {
-  "name": "signature-pad",
+  "name": "google-address-finder-enhanced",
   "private": true,
+  "license": "MIT",
   "version": "1.0.0",
-  "description": "Lightning Web Component for a Signature Pad. Can be used in Lightning Experience and Flows. Supports Guest Users in Experience Cloud",
+  "description": "Lightning Web Component for a using the Google Place API. Can be used in Lightning Experience and Flows.",
+  "author": {
+    "name": "On Duty Software Solutions",
+    "email": "ing.martinez.pablo@gmail.com"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/engPabloMartinez/signaturePad"
+    "url": "https://github.com/ondutysoftwaresolutions/googleAddressFinderForFlows"
   },
   "scripts": {
     "lint": "eslint **/{aura,lwc}/**",
