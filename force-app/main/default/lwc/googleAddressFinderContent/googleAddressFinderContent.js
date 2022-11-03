@@ -25,6 +25,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   _sessionToken;
   _street;
+  _suburb;
   _state;
   _country;
   _placeId;
@@ -47,12 +48,8 @@ export default class GoogleAddressFinderContent extends LightningElement {
     if (this.isInFlow) {
       this.finishLoaded = true;
 
-      // if we have an empty address, set the current location
-      if (!this.street && !this.city && !this.country && !this.state && !this.postalCode) {
-        this._getCurrentLocation();
-      } else {
-        this._setMapMarkers(this.latitude, this.longitude);
-      }
+      // build the map markers
+      this._buildMapMarkers();
     }
 
     this._sessionToken = this._generateSessionToken();
@@ -82,6 +79,11 @@ export default class GoogleAddressFinderContent extends LightningElement {
     if (result.data) {
       this._recordData = result.data;
       this.error = undefined;
+
+      // build the map markers
+      if (!this.isEditing) {
+        this._buildMapMarkers();
+      }
     } else if (result.error) {
       this.error = `Error getting main record data - ${this._reduceErrors(result.error)}`;
     }
@@ -90,25 +92,66 @@ export default class GoogleAddressFinderContent extends LightningElement {
   // =======================================================================================================================================================================================================================================
   // getter methods
   // =======================================================================================================================================================================================================================================
-  get street() {
+  get isReadyToRender() {
     if (this.isInFlow) {
-      return this.parent.streetOutput || this.parent.streetInput || '';
+      return true;
     }
 
-    return this._street || getFieldValue(this._recordData, `${this.parent.objectApiName}.${this.streetField}`);
+    return this._recordData;
+  }
+
+  get street() {
+    if (this.isInFlow) {
+      return this._street || this.parent.streetInput || '';
+    }
+
+    let streetToReturn =
+      this._street || getFieldValue(this._recordData, `${this.parent.objectApiName}.${this.streetField}`);
+
+    // if we have a suburb then add it as part of the street to display
+    if (!this.suburbField && this.suburb) {
+      streetToReturn += `, ${this.suburb}`;
+    }
+
+    return streetToReturn;
+  }
+
+  get streetToShow() {
+    if (this.suburbField && this.stateField) {
+      return `${this.street}, ${this.suburb}`;
+    }
+
+    return this.street;
+  }
+
+  get suburb() {
+    if (this.isInFlow) {
+      return this._suburb || this.parent.suburbInput || '';
+    }
+
+    return this._suburb || getFieldValue(this._recordData, `${this.parent.objectApiName}.${this.suburbField}`);
   }
 
   get state() {
     if (this.isInFlow) {
-      return this.parent.stateOutput || this.parent.stateInput || '';
+      return this._state || this.parent.stateInput || '';
     }
 
     return this._state || getFieldValue(this._recordData, `${this.parent.objectApiName}.${this.stateField}`);
   }
 
+  get stateToShow() {
+    // if we don't have a state, then city is state, and the suburb is the city
+    if (!this.stateField && this.suburbField) {
+      return this.city;
+    }
+
+    return this.state;
+  }
+
   get country() {
     if (this.isInFlow) {
-      return this.parent.countryOutput || this.parent.countryInput || '';
+      return this._country || this.parent.countryInput || '';
     }
 
     return this._country || getFieldValue(this._recordData, `${this.parent.objectApiName}.${this.countryField}`);
@@ -116,15 +159,24 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   get city() {
     if (this.isInFlow) {
-      return this.parent.cityOutput || this.parent.cityInput || '';
+      return this._city || this.parent.cityInput || '';
     }
 
     return this._city || getFieldValue(this._recordData, `${this.parent.objectApiName}.${this.cityField}`);
   }
 
+  get cityToShow() {
+    // if we don't have a state, then city is state, and the suburb is the city
+    if (!this.stateField && this.suburbField) {
+      return this.suburb;
+    }
+
+    return this.city;
+  }
+
   get postalCode() {
     if (this.isInFlow) {
-      return this.parent.postalCodeOutput || this.parent.postalCodeInput || '';
+      return this._postalCode || this.parent.postalCodeInput || '';
     }
 
     return this._postalCode || getFieldValue(this._recordData, `${this.parent.objectApiName}.${this.postalCodeField}`);
@@ -132,7 +184,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   get placeId() {
     if (this.isInFlow) {
-      return this.parent.placeIdOutput || this.parent.placeIdInput || '';
+      return this._placeId || this.parent.placeIdInput || '';
     }
 
     return this._placeId || getFieldValue(this._recordData, `${this.parent.objectApiName}.${this.placeIdField}`) || '';
@@ -140,7 +192,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   get latitude() {
     if (this.isInFlow) {
-      return this.parent.latitudeOutput || this.parent.latitudeInput || '';
+      return this._latitude || this.parent.latitudeInput || '';
     }
 
     return (
@@ -150,7 +202,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   get longitude() {
     if (this.isInFlow) {
-      return this.parent.longitudeOutput || this.parent.longitudeInput || '';
+      return this._longitude || this.parent.longitudeInput || '';
     }
 
     return (
@@ -160,6 +212,10 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   get streetField() {
     return this.parent[`streetField${this.address}`];
+  }
+
+  get suburbField() {
+    return this.parent[`suburbField${this.address}`];
   }
 
   get stateField() {
@@ -200,6 +256,10 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   get isRequiredStreet() {
     return this.parent[`requiredStreet${this.address}`];
+  }
+
+  get isRequiredSuburb() {
+    return this.parent[`requiredSuburb${this.address}`];
   }
 
   get isRequiredCity() {
@@ -266,12 +326,25 @@ export default class GoogleAddressFinderContent extends LightningElement {
     return this.showMap && this.currentLocationError;
   }
 
+  get showSuburbInFlow() {
+    return this.parent.showSuburb;
+  }
+
+  get showStateInFlow() {
+    return this.parent.showState;
+  }
+
   get fields() {
     const theFields = [];
 
     // street
     if (this.streetField) {
       theFields.push(`${this.parent.objectApiName}.${this.streetField}`);
+    }
+
+    // suburb
+    if (this.suburbField) {
+      theFields.push(`${this.parent.objectApiName}.${this.suburbField}`);
     }
 
     // state
@@ -343,7 +416,19 @@ export default class GoogleAddressFinderContent extends LightningElement {
   }
 
   get countryInputClasses() {
-    return `'slds-m-bottom--none slds-size--${this.placeIdField ? '4' : '6'}-of-6`;
+    if (this.isInFlow) {
+      return `slds-size--${this.showStateInFlow ? '6' : '3'}-of-6`;
+    }
+
+    return `'slds-m-bottom--none slds-size--${this.stateField ? '6' : '3'}-of-6`;
+  }
+
+  get cityInputClasses() {
+    if (this.isInFlow) {
+      return `slds-size--${this.showSuburbInFlow ? '3' : '6'}-of-6`;
+    }
+
+    return `slds-m-bottom--none slds-size--${this.suburbField ? '3' : '6'}-of-6`;
   }
 
   get requiredStar() {
@@ -352,6 +437,16 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   get _formattedAddress() {
     return `${this.street}, ${this.city}, ${this.state}, ${this.country}`;
+  }
+
+  get mapViewOptions() {
+    return {
+      draggable: false,
+      zoomControl: false,
+      scrollwheel: false,
+      disableDefaultUI: true,
+      disableDoubleClickZoom: true,
+    };
   }
 
   // =======================================================================================================================================================================================================================================
@@ -372,6 +467,15 @@ export default class GoogleAddressFinderContent extends LightningElement {
       }
       return (text === 'x' ? random : (random & 0x7) | 0x8).toString(16);
     });
+  }
+
+  _buildMapMarkers() {
+    // if we have an empty address, set the current location
+    if (!this.street && !this.city && !this.country && (!this.state || !this.suburb) && !this.postalCode) {
+      this._getCurrentLocation();
+    } else {
+      this._setMapMarkers(this.latitude, this.longitude);
+    }
   }
 
   _reduceErrors(errors) {
@@ -502,6 +606,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
   _clearValues() {
     this._street = '';
+    this._suburb = '';
     this._city = '';
     this._state = '';
     this._postalCode = '';
@@ -512,6 +617,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
 
     if (this.isInFlow) {
       this.parent.streetOutput = '';
+      this.parent.suburbOutput = '';
       this.parent.cityOutput = '';
       this.parent.stateOutput = '';
       this.parent.postalCodeOutput = '';
@@ -597,7 +703,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
             let address = {
               formattedAddress: selectedDescription, // I need to store the address from the autocomplete in here, because for some reason the get Place details don't bring back the full address (e.g. 10a becomes 10)
               street: '',
-              suburb: '', // store the suburb here to not loose it and append it to the street at the end
+              suburb: '',
               city: '',
               state: '',
               country: '',
@@ -652,7 +758,15 @@ export default class GoogleAddressFinderContent extends LightningElement {
               }
             });
 
-            this._street = address.street + (address.suburb ? ', ' + address.suburb : '');
+            this._street = address.street;
+
+            // if we don't have a suburb field append it to the street if any
+            if ((this.isInRecordPage && !this.suburbField) || (this.isInFlow && !this.showSuburbInFlow)) {
+              this._street += address.suburb ? ', ' + address.suburb : '';
+            } else {
+              this._suburb = address.suburb;
+            }
+
             this._city = address.city;
             this._state = address.state;
             this._postalCode = address.postalCode;
@@ -662,7 +776,8 @@ export default class GoogleAddressFinderContent extends LightningElement {
             this._latitude = address.latitude;
 
             if (this.isInFlow) {
-              this.parent.streetOutput = this._street;
+              this.parent.streetOutput = address.street; // return only the street as the suburb is in another field
+              this.parent.suburbOutput = address.suburb;
               this.parent.cityOutput = this._city;
               this.parent.stateOutput = this._state;
               this.parent.postalCodeOutput = this._postalCode;

@@ -18,17 +18,19 @@
             <property name="labelToShow1" description="Label of the First Field" label="First Field Label" placeholder="e.g. Billing Address" type="String" required="true" default="" />
             <property name="streetField1" description="API name of the First Street Field" label="First Street Field" type="String" placeholder="e.g. BillingStreet" required="true" default="" />
             <property name="requiredStreet1" description="Is the Street required for the First Address?" label="Street First Address Required?" type="Boolean" required="true" default="false" />
+            <property name="suburbField1" description="API name of the First Suburb Field" label="First Suburb Field" type="String" placeholder="e.g. BillingCity or Billing_Suburb__c" required="false" default="" />
+            <property name="requiredSuburb1" description="Is the Suburb required for the First Address?" label="Suburb First Address Required?" type="Boolean" required="true" default="false" />
             <property name="cityField1" description="API name of the First City Field" label="First City Field" type="String" placeholder="e.g. BillingCity" required="true" default="" />
             <property name="requiredCity1" description="Is the City required for the First Address?" label="City First Address Required?" type="Boolean" required="true" default="false" />
-            <property name="stateField1" description="API name of the First state Field" label="First State/Province Field" type="String" placeholder="e.g. BillingState" required="true" default="" />
+            <property name="stateField1" description="API name of the First state Field" label="First State/Province Field" type="String" placeholder="e.g. BillingState" required="false" default="" />
             <property name="requiredState1" description="Is the State/Province required for the First Address?" label="State/Province First Address Required?" type="Boolean" required="true" default="false" />
             <property name="postalCodeField1" description="API name of the First Postal Code Field" label="First Postal Code Field" type="String" placeholder="e.g. BillingPostalCode" required="true" default="" />
             <property name="requiredPostalCode1" description="Is the PostalCode required for the First Address?" label="PostalCode First Address Required?" type="Boolean" required="true" default="false" />
             <property name="countryField1" description="API name of the First Country Field" label="First Country Field" type="String" placeholder="e.g. BillingCountry" required="true" default="" />
             <property name="requiredCountry1" description="Is the Country required for the First Address?" label="Country First Address Required?" type="Boolean" required="true" default="false" />
             <property name="placeIdField1" description="API name of the First Place Id Field" label="First Place Id Field" type="String" placeholder="e.g. Billing_Place_Id__c" default="" />
-            <property name="latitudeField1" description="API name of the First Latitude Field" label="First Latitude Field" type="String" placeholder="e.g. Billing_Latitude__c" default="" />
-            <property name="longitudeField1" description="API name of the First Longitude Field" label="First Longitude Field" type="String" placeholder="e.g. Billing_Longitude__c" default="" />
+            <property name="latitudeField1" description="API name of the First Latitude Field" label="First Latitude Field" type="String" placeholder="e.g. BillingLatitude" default="" />
+            <property name="longitudeField1" description="API name of the First Longitude Field" label="First Longitude Field" type="String" placeholder="e.g. BillingLongitude" default="" />
             <property name="showMap1" description="Show a static map of the First address" label="Show First Address Map?" type="Boolean" default="true" />
             <property name="editEnabled1" description="Is the edition of the First Address enabled?" label="Allow edition First Address?" type="Boolean" default="true" />
             <property name="editAlwaysEnabled1" description="Is the edition of the First Address always enabled?" label="Edit First Address always enabled?" type="Boolean" default="false" required="true" />
@@ -41,17 +43,19 @@
             <property name="labelToShow2" description="Label of the Second Field" label="Second Field Label" placeholder="e.g. Shipping Address" type="String" default="" />
             <property name="streetField2" description="API name of the Second Street Field" label="Second Street Field" type="String" placeholder="e.g. ShippingStreet" default="" />
             <property name="requiredStreet2" description="Is the Street required for the Second Address?" label="Street Second Address Required?" type="Boolean" required="true" default="false" />
+            <property name="suburbField2" description="API name of the Second Suburb Field" label="Second Suburb Field" type="String" placeholder="e.g. BillingCity or Billing_Suburb__c" required="false" default="" />
+            <property name="requiredSuburb2" description="Is the Suburb required for the Second Address?" label="Suburb Second Address Required?" type="Boolean" required="true" default="false" />
             <property name="cityField2" description="API name of the Second City Field" label="Second City Field" type="String" placeholder="e.g. ShippingCity" default="" />
             <property name="requiredCity2" description="Is the City required for the Second Address?" label="City Second Address Required?" type="Boolean" required="true" default="false" />
             <property name="stateField2" description="API name of the Second State/Province Field" label="Second State/Province Field" type="String" placeholder="e.g. ShippingState" default="" />
-            <property name="requiredState2" description="Is the State/Province required for the Second Address?" label="State/Province Second Address Required?" type="Boolean" required="true" default="false" />
+            <property name="requiredState2" description="Is the State/Province required for the Second Address?" label="State/Province Second Address Required?" type="Boolean" required="false" default="false" />
             <property name="postalCodeField2" description="API name of the Second Postal Code Field" label="Second Postal Code Field" type="String" placeholder="e.g. ShippingPostalCode" default="" />
             <property name="requiredPostalCode2" description="Is the PostalCode required for the Second Address?" label="PostalCode Second Address Required?" type="Boolean" required="true" default="false" />
             <property name="countryField2" description="API name of the Second Country Field" label="Second Country Field" type="String" placeholder="e.g. ShippingCountry" default="" />
             <property name="requiredCountry2" description="Is the Country required for the Second Address?" label="Country Second Address Required?" type="Boolean" required="true" default="false" />
             <property name="placeIdField2" description="API name of the Second Place Id Field" label="Second Place Id Field" type="String" placeholder="e.g. Shipping_Place_Id__c" default="" />
-            <property name="latitudeField2" description="API name of the Second Latitude Field" label="Second Latitude Field" type="String" placeholder="e.g. Shipping_Latitude__c" default="" />
-            <property name="longitudeField2" description="API name of the Second Longitude Field" label="Second Longitude Field" type="String" placeholder="e.g. Shipping_Longitude__c" default="" />
+            <property name="latitudeField2" description="API name of the Second Latitude Field" label="Second Latitude Field" type="String" placeholder="e.g. ShippingLatitude" default="" />
+            <property name="longitudeField2" description="API name of the Second Longitude Field" label="Second Longitude Field" type="String" placeholder="e.g. ShippingLongitude" default="" />
             <property name="showMap2" description="Show a static map of the Second address" label="Show Second Address Map?" type="Boolean" default="true" required="true" />
             <property name="editEnabled2" description="Is the edition of the Second Address enabled?" label="Allow edition Second Address?" type="Boolean" default="true" required="true" />
             <property name="editAlwaysEnabled2" description="Is the edition of the Second Address always enabled?" label="Edit Second Address always enabled?" type="Boolean" default="false" required="true" />
@@ -63,6 +67,7 @@
         <targetConfig targets="lightning__FlowScreen">
             <property name="requiredSearch1" description="Is a search required for the Address?" label="Search Address Required?" type="Boolean" required="true" default="false" role="inputOnly" />
             <property name="requiredStreet1" description="Is the Street required for the Address?" label="Street Address Required?" type="Boolean" default="false" role="inputOnly" />
+            <property name="requiredSuburb1" description="Is the Suburb required for the Address?" label="Suburb Address Required?" type="Boolean" required="true" default="false" role="inputOnly" />
             <property name="requiredCity1" description="Is the City required for the Address?" label="City Address Required?" type="Boolean" default="false" role="inputOnly" />
             <property name="requiredState1" description="Is the State/Province required for the Address?" label="State/Province Address Required?" type="Boolean" default="false" role="inputOnly" />
             <property name="requiredCountry1" description="Is the Country required for the Address?" label="Country Address Required?" type="Boolean" default="false" role="inputOnly" />
@@ -75,8 +80,11 @@
             <property name="searchEnabled" description="Is the Google Search Address enabled?" label="Allow Search?" type="Boolean" required="true" default="true" role="inputOnly" />
             <property name="disabledInputs" description="Disable the inputs of the individual fields when the address is found" label="Disable the Individual Fields" default="false" required="true" type="Boolean" role="inputOnly" />
             <property name="hideEditFields" description="Hide the individual fields for edition" label="Hide the Individual Fields?" type="Boolean" default="false" required="true" role="inputOnly" />
+            <property name="showSuburb" description="Show the Suburb field in the UI" label="Show Suburb?" type="Boolean" default="false" required="true" role="inputOnly" />
+            <property name="showState" description="Show the State field in the UI" label="Show State?" type="Boolean" default="true" required="true" role="inputOnly" />
 
             <property name="streetInput" description="Street default value" label="Street" type="String" role="inputOnly" />
+            <property name="suburbInput" description="Suburb default value" label="Suburb" type="String" role="inputOnly" />
             <property name="cityInput" description="City default value" label="City" type="String" role="inputOnly" />
             <property name="stateInput" description="State/Province default value" label="State/Province" type="String" role="inputOnly" />
             <property name="postalCodeInput" description="Postal Code default value" label="Postal Code" type="String" role="inputOnly" />
@@ -86,6 +94,7 @@
             <property name="longitudeInput" description="Longitude default value" label="Longitude" type="String" role="inputOnly" />
 
             <property name="streetOutput" description="Street returned from Google Places API" label="Street" type="String" role="outputOnly" />
+            <property name="suburbOutput" description="Suburb returned from Google Places API" label="Suburb" type="String" role="outputOnly" />
             <property name="cityOutput" description="City returned from Google Places API" label="City" type="String" role="outputOnly" />
             <property name="stateOutput" description="State/Province returned from Google Places API" label="State/Province" type="String" role="outputOnly" />
             <property name="postalCodeOutput" description="Postal Code returned from Google Places API" label="Postal Code" type="String" role="outputOnly" />

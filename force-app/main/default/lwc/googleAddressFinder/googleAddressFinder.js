@@ -12,6 +12,7 @@ export default class GoogleAddressFinder extends LightningElement {
   // addresses
   @api requiredSearch1;
   @api streetField1;
+  @api suburbField1;
   @api cityField1;
   @api stateField1;
   @api countryField1;
@@ -28,6 +29,7 @@ export default class GoogleAddressFinder extends LightningElement {
   @api countryFilters1;
   @api stateAndCountryShortCodes1;
   @api requiredStreet1;
+  @api requiredSuburb1;
   @api requiredCity1;
   @api requiredState1;
   @api requiredCountry1;
@@ -35,6 +37,7 @@ export default class GoogleAddressFinder extends LightningElement {
 
   @api requiredSearch2;
   @api streetField2;
+  @api suburbField2;
   @api cityField2;
   @api stateField2;
   @api countryField2;
@@ -51,6 +54,7 @@ export default class GoogleAddressFinder extends LightningElement {
   @api countryFilters2;
   @api stateAndCountryShortCodes2 = false;
   @api requiredStreet2;
+  @api requiredSuburb2;
   @api requiredCity2;
   @api requiredState2;
   @api requiredCountry2;
@@ -60,7 +64,10 @@ export default class GoogleAddressFinder extends LightningElement {
   @api disabledInputs;
   @api hideEditFields;
   @api searchEnabled;
+  @api showSuburb;
+  @api showState;
   @api streetInput;
+  @api suburbInput;
   @api cityInput;
   @api stateInput;
   @api countryInput;
@@ -71,6 +78,7 @@ export default class GoogleAddressFinder extends LightningElement {
 
   // flow outputs
   @api streetOutput;
+  @api suburbOutput;
   @api cityOutput;
   @api stateOutput;
   @api countryOutput;
@@ -86,17 +94,29 @@ export default class GoogleAddressFinder extends LightningElement {
   // lifecycle methods
   // =======================================================================================================================================================================================================================================
   connectedCallback() {
+    // check that at least a suburb or a state field is populated
+    if (!this.showInFlow && !this.suburbField1 && !this.stateField1) {
+      this.error = 'A State/Province and/or Suburb is needed to be able to use this component';
+    }
+
     // check the completeness of address 2
-    if (this.streetField2 || this.cityField2 || this.stateField2 || this.countryField2 || this.postalCodeField2) {
+    if (
+      this.streetField2 ||
+      this.cityField2 ||
+      this.stateField2 ||
+      this.countryField2 ||
+      this.postalCodeField2 ||
+      this.suburbField2
+    ) {
       if (
         !this.streetField2 ||
         !this.cityField2 ||
-        !this.stateField2 ||
+        (!this.stateField2 && !this.suburbField2) ||
         !this.countryField2 ||
         !this.postalCodeField2
       ) {
         this.error =
-          'A Street, City, State/Province, Country and Postal Code field are required to be able to use the Second Address';
+          'A Street, City, State/Province or Suburb, Country and Postal Code field are required to be able to use the Second Address';
       }
     }
 
@@ -231,7 +251,10 @@ export default class GoogleAddressFinder extends LightningElement {
     this.disabledInputs = this.disabledInputs === undefined ? false : this.disabledInputs;
     this.hideEditFields = this.hideEditFields === undefined ? false : this.hideEditFields;
     this.searchEnabled = this.searchEnabled === undefined ? true : this.searchEnabled;
+    this.showSuburb = this.showSuburb === undefined ? false : this.showSuburb;
+    this.showState = this.showState === undefined ? true : this.showState;
     this.requiredStreet1 = this.requiredStreet1 === undefined ? false : this.requiredStreet1;
+    this.requiredSuburb1 = this.requiredSuburb1 === undefined ? false : this.requiredSuburb1;
     this.requiredCity1 = this.requiredCity1 === undefined ? false : this.requiredCity1;
     this.requiredState1 = this.requiredState1 === undefined ? false : this.requiredState1;
     this.requiredCountry1 = this.requiredCountry1 === undefined ? false : this.requiredCountry1;
@@ -239,6 +262,7 @@ export default class GoogleAddressFinder extends LightningElement {
 
     // set default output values
     this.streetOutput = this.streetInput;
+    this.suburbOutput = this.suburbInput;
     this.cityOutput = this.cityInput;
     this.stateOutput = this.stateInput;
     this.countryOutput = this.countryInput;

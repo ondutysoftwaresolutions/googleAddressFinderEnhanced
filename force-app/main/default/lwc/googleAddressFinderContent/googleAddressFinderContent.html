@@ -2,26 +2,31 @@
   <template if:false={isEditing}>
     <div class={viewModeClasses}>
       <div class="slds-form-element__label slds-size--1-of-6">{labelToShow}</div>
-      <div class="slds-form-element__control slds-grid slds-size--5-of-6 slds-p-top--x-small">
-        <lightning-formatted-address
-          class="slds-size--11-of-12 font-14"
-          street={street}
-          city={city}
-          country={country}
-          province={state}
-          show-static-map={showMap}
-          postal-code={postalCode}
-        >
-        </lightning-formatted-address>
-        <template if:true={editEnabled}>
-          <lightning-button-icon
-            icon-name="utility:edit"
-            variant="container"
-            alternative-text="Settings"
-            class="slds-size--1-of-12 slds-text-align--right"
-            onclick={handleToggleEdit}
+      <div class="slds-form-element__control slds-grid slds-size--5-of-6 slds-p-top--x-small slds-wrap">
+        <template if:true={isReadyToRender}>
+          <lightning-formatted-address
+            class="slds-size--11-of-12 font-14"
+            street={streetToShow}
+            city={cityToShow}
+            country={country}
+            province={stateToShow}
+            postal-code={postalCode}
           >
-          </lightning-button-icon>
+          </lightning-formatted-address>
+          <template if:true={editEnabled}>
+            <lightning-button-icon
+              icon-name="utility:edit"
+              variant="container"
+              alternative-text="Settings"
+              class="slds-size--1-of-12 slds-text-align--right"
+              onclick={handleToggleEdit}
+            >
+            </lightning-button-icon>
+          </template>
+          <template if:true={showMap}>
+            <lightning-map class="slds-p-top--small" map-markers={mapMarkers} zoom-level="16" options={mapViewOptions}>
+            </lightning-map>
+          </template>
         </template>
       </div>
     </div>
@@ -164,8 +169,21 @@
               required={isRequiredStreet}
               disabled={disabledInputsWhenFoundFlow}
             ></lightning-textarea>
+            <template if:true={showSuburbInFlow}>
+              <lightning-input
+                class="slds-size--3-of-6"
+                label="Suburb"
+                data-name="suburb"
+                variant="label-stacked"
+                onchange={handleChangeInput}
+                value={suburb}
+                required={isRequiredSuburb}
+                disabled={disabledInputsWhenFoundFlow}
+              >
+              </lightning-input>
+            </template>
             <lightning-input
-              class="slds-size--4-of-6"
+              class={cityInputClasses}
               label="City"
               data-name="city"
               variant="label-stacked"
@@ -176,18 +194,7 @@
             >
             </lightning-input>
             <lightning-input
-              class="slds-size--2-of-6"
-              label="State/Province"
-              data-name="state"
-              variant="label-stacked"
-              onchange={handleChangeInput}
-              value={state}
-              required={isRequiredState}
-              disabled={disabledInputsWhenFoundFlow}
-            >
-            </lightning-input>
-            <lightning-input
-              class="slds-size--4-of-6"
+              class="slds-size--3-of-6"
               label="Postal Code"
               data-name="postalCode"
               required={isRequiredPostalCode}
@@ -197,8 +204,22 @@
               value={postalCode}
             >
             </lightning-input>
+            <template if:true={showStateInFlow}>
+              <lightning-input
+                class="slds-size--3-of-6"
+                label="State/Province"
+                data-name="state"
+                variant="label-stacked"
+                onchange={handleChangeInput}
+                value={state}
+                required={isRequiredState}
+                disabled={disabledInputsWhenFoundFlow}
+              >
+              </lightning-input>
+            </template>
+
             <lightning-input
-              class="slds-size--2-of-6"
+              class={countryInputClasses}
               label="Country"
               disabled={disabledInputsWhenFoundFlow}
               data-name="country"
@@ -209,7 +230,7 @@
             >
             </lightning-input>
             <lightning-input
-              class="slds-size--2-of-6 slds-hide"
+              class="slds-hide"
               data-name="placeId"
               label="Place Id"
               disabled
@@ -219,7 +240,7 @@
             >
             </lightning-input>
             <lightning-input
-              class="slds-size--1-of-2 slds-hide"
+              class="slds-hide"
               data-name="latitude"
               label="Latitude"
               disabled
@@ -229,7 +250,7 @@
             >
             </lightning-input>
             <lightning-input
-              class="slds-size--1-of-2 slds-hide"
+              class="slds-hide"
               data-name="longitude"
               label="Longitude"
               disabled
@@ -289,8 +310,21 @@
                 disabled={disabledInputsWhenFound}
               >
               </lightning-input-field>
+              <template if:true={suburbField}>
+                <lightning-input-field
+                  class="slds-m-bottom--none slds-size--3-of-6"
+                  data-name="suburb"
+                  required={isRequiredSuburb}
+                  variant="label-stacked"
+                  field-name={suburbField}
+                  onchange={handleChangeInput}
+                  value={suburb}
+                  disabled={disabledInputsWhenFound}
+                >
+                </lightning-input-field>
+              </template>
               <lightning-input-field
-                class="slds-m-bottom--none slds-size--1-of-1"
+                class={cityInputClasses}
                 data-name="city"
                 required={isRequiredCity}
                 variant="label-stacked"
@@ -301,7 +335,7 @@
               >
               </lightning-input-field>
               <lightning-input-field
-                class="slds-size--4-of-6 slds-m-bottom--none"
+                class="slds-m-bottom--none slds-size--3-of-6"
                 data-name="postalCode"
                 required={isRequiredPostalCode}
                 variant="label-stacked"
@@ -311,17 +345,19 @@
                 disabled={disabledInputsWhenFound}
               >
               </lightning-input-field>
-              <lightning-input-field
-                class="slds-size--2-of-6 slds-m-bottom--none"
-                data-name="state"
-                variant="label-stacked"
-                field-name={stateField}
-                onchange={handleChangeInput}
-                required={isRequiredState}
-                value={state}
-                disabled={disabledInputsWhenFound}
-              >
-              </lightning-input-field>
+              <template if:true={stateField}>
+                <lightning-input-field
+                  class="slds-size--3-of-6 slds-m-bottom--none"
+                  data-name="state"
+                  variant="label-stacked"
+                  field-name={stateField}
+                  onchange={handleChangeInput}
+                  required={isRequiredState}
+                  value={state}
+                  disabled={disabledInputsWhenFound}
+                >
+                </lightning-input-field>
+              </template>
               <lightning-input-field
                 class={countryInputClasses}
                 data-name="country"
@@ -335,7 +371,7 @@
               </lightning-input-field>
               <template if:true={placeIdField}>
                 <lightning-input-field
-                  class="slds-size--2-of-6 slds-m-bottom--none"
+                  class="slds-hide"
                   data-name="placeId"
                   variant="label-stacked"
                   field-name={placeIdField}
@@ -347,7 +383,7 @@
               </template>
               <template if:true={latitudeField}>
                 <lightning-input-field
-                  class="slds-size--2-of-6 slds-m-bottom--none slds-hide"
+                  class="slds-hide"
                   data-name="latitude"
                   variant="label-stacked"
                   field-name={latitudeField}
@@ -359,7 +395,7 @@
               </template>
               <template if:true={longitudeField}>
                 <lightning-input-field
-                  class="slds-size--2-of-6 slds-m-bottom--none slds-hide"
+                  class="slds-hide"
                   data-name="longitude"
                   variant="label-stacked"
                   field-name={longitudeField}
