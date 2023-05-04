@@ -111,11 +111,11 @@ Documentation on how to get an API Key from Google can be found here: https://de
 
 ## Live Demo
 
-Live Demo on a Scratch Org: <a href="https://hosted-scratch.herokuapp.com/launch?template=https://github.com/engPabloMartinez/googleAddressFinderForFlows">CLICK HERE</a>
+Live Demo on a Scratch Org: <a href="https://hosted-scratch.herokuapp.com/launch?template=https://github.com/ondutysoftwaresolutions/googleAddressFinderForFlows">CLICK HERE</a>
 
 ## Installation
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=engPabloMartinez&repo=googleAddressFinderForFlows&ref=master">
+<a href="https://githubsfdeploy.herokuapp.com?owner=ondutysoftwaresolutions&repo=googleAddressFinderForFlows&ref=master">
   <img alt="Deploy to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
