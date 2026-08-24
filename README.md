@@ -110,6 +110,7 @@ Documentation on how to get an API Key from Google can be found here: https://de
 **IMPORTANT NOTE**: This component requires that you either specify a `Suburb Field` and/or a `State Field`.
 
 ## Support
+
 If you want to support my work, feel free to buy me a coffee 😀
 
 <a href="https://www.buymeacoffee.com/ondutysoftwaresolutions"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=ondutysoftwaresolutions&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a>

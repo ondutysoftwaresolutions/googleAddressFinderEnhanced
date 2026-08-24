@@ -459,10 +459,10 @@ export default class GoogleAddressFinderContent extends LightningElement {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (text) => {
       let random = Math.random() * 16;
       if (nowTime > 0) {
-        random = (nowTime + random) % 16 | 0;
+        random = ((nowTime + random) % 16) | 0;
         nowTime = Math.floor(nowTime / 16);
       } else {
-        random = (nowTime2 + random) % 16 | 0;
+        random = ((nowTime2 + random) % 16) | 0;
         nowTime2 = Math.floor(nowTime2 / 16);
       }
       return (text === 'x' ? random : (random & 0x7) | 0x8).toString(16);
@@ -525,7 +525,7 @@ export default class GoogleAddressFinderContent extends LightningElement {
               const parsed = JSON.parse(error.body.message);
               const statusCode = parsed.code;
               errorToReturn = `${statusCode !== 700 ? 'ERROR: ' : ''}${parsed.message}`;
-            } catch (e) {
+            } catch {
               errorToReturn = error.body.message;
             }
 
